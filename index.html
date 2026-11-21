@@ -1,56 +1,310 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>TEAM DRIVE</title>
-<style>
-  body { background: #0a0a0a; color: white; font-family: Arial; margin: 0; }
-  .login { height: 100vh; display: flex; justify-content: center; align-items: center; }
-  .box { background: #111; padding: 40px; border-radius: 12px; text-align: center; }
-  .box input { width: 100%; padding: 12px; margin: 10px 0; background: #222; border: 1px solid #333; color: white; border-radius: 6px; text-transform: uppercase; }
-  .box button { width: 100%; padding: 12px; background: #ff0000; border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer; }
-  
-  #main { display: none; }
-  .header { padding: 15px 20px; background: #111; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; }
-  .upload-btn { background: #ff0000; padding: 10px 20px; border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer; text-decoration: none; }
-  iframe { width: 100%; height: calc(100vh - 65px); border: none; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Willow & Fox TV</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      background-color: #FFDE59;
+      background-image: radial-gradient(#FF914D 20%, transparent 20%);
+      background-size: 40px 40px;
+      font-family: 'Fredoka One', cursive, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Cute Cartoon TV Antennas */
+    .antennas {
+      position: relative;
+      width: 140px;
+      height: 45px;
+      margin-bottom: -6px;
+    }
+
+    .antenna-left, .antenna-right {
+      position: absolute;
+      bottom: 0;
+      width: 6px;
+      height: 50px;
+      background: #000000;
+      border-radius: 5px;
+    }
+
+    .antenna-left {
+      left: 35px;
+      transform: rotate(-30deg);
+    }
+
+    .antenna-right {
+      right: 35px;
+      transform: rotate(30deg);
+    }
+
+    .antenna-left::after, .antenna-right::after {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: -6px;
+      width: 18px;
+      height: 18px;
+      background: #FF3131;
+      border: 4px solid #000000;
+      border-radius: 50%;
+    }
+
+    /* Main Cartoon TV Box */
+    .toon-tv {
+      width: 100%;
+      max-width: 850px;
+      background: #4CC9F0;
+      border: 6px solid #000000;
+      border-radius: 30px;
+      box-shadow: 12px 12px 0px #000000;
+      padding: 22px;
+      position: relative;
+    }
+
+    /* Channel Selection Bar */
+    .channel-bar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 15px;
+      justify-content: center;
+    }
+
+    .ch-btn {
+      background: #FFFFFF;
+      color: #000000;
+      border: 4px solid #000000;
+      border-radius: 12px;
+      padding: 8px 18px;
+      font-family: inherit;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 3px 3px 0px #000000;
+      transition: transform 0.1s;
+    }
+
+    .ch-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0px #000000;
+    }
+
+    .ch-btn.active {
+      background: #FF3131;
+      color: #FFFFFF;
+    }
+
+    /* 16:9 Screen */
+    .tv-screen {
+      position: relative;
+      width: 100%;
+      padding-bottom: 56.25%;
+      background: #000000;
+      border: 6px solid #000000;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: inset 0 0 15px rgba(255,255,255,0.2);
+    }
+
+    .tv-screen iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      transform-origin: 0 0;
+    }
+
+    /* Bottom Controls & Fullscreen Button */
+    .tv-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 18px;
+      padding: 0 8px;
+    }
+
+    .dials {
+      display: flex;
+      gap: 12px;
+    }
+
+    .dial {
+      width: 34px;
+      height: 34px;
+      background: #FFDE59;
+      border: 4px solid #000000;
+      border-radius: 50%;
+      box-shadow: 3px 3px 0px #000000;
+    }
+
+    .dial.pink { background: #FF66C4; }
+
+    /* Quality Buttons */
+    .quality-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .q-btn {
+      background: #FFFFFF;
+      color: #000000;
+      border: 4px solid #000000;
+      border-radius: 12px;
+      padding: 7px 12px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      cursor: pointer;
+      box-shadow: 3px 3px 0px #000000;
+      transition: transform 0.1s;
+    }
+
+    .q-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0px #000000;
+    }
+
+    .q-btn.active {
+      background: #FF914D;
+      color: #000000;
+    }
+
+    /* Cartoon Fullscreen Button */
+    .fs-btn {
+      background: #7ED957;
+      color: #000000;
+      border: 4px solid #000000;
+      border-radius: 15px;
+      padding: 10px 20px;
+      font-family: inherit;
+      font-size: 1.05rem;
+      cursor: pointer;
+      box-shadow: 4px 4px 0px #000000;
+      transition: transform 0.1s;
+    }
+
+    .fs-btn:hover {
+      background: #94e86f;
+    }
+
+    .fs-btn:active {
+      transform: translate(3px, 3px);
+      box-shadow: 1px 1px 0px #000000;
+    }
+
+    body.low-data {
+      background-image: none;
+    }
+  </style>
 </head>
 <body>
 
-<!-- Screen 1: Password -->
-<div class="login" id="login">
-  <div class="box">
-    <h1>TEAM ACCESS</h1>
-    <input type="password" id="pass" placeholder="Enter Password">
-    <button onclick="check()">ENTER</button>
-    <p id="err" style="color:red; display:none;">Wrong Password</p>
+  <div class="antennas">
+    <div class="antenna-left"></div>
+    <div class="antenna-right"></div>
   </div>
-</div>
 
-<!-- Screen 2: Drive with Custom Header -->
-<div id="main">
-  <div class="header">
-    <h2>TEAM VIDEOS</h2>
-    <!-- ये वाला बटन सीधा Drive के Upload पर ले जाएगा -->
-    <a href="https://drive.google.com/drive/folders/1DwS7LJrKHoqb7NPhY05PW_PRkQdpib7I" target="_blank" class="upload-btn">+ ADD VIDEO</a>
+  <div class="toon-tv">
+    
+    <div class="channel-bar">
+      <button class="ch-btn active" onclick="changeChannel('https://taifood-blog.asia/embed/247-willow', this)">Willow TV</button>
+      <button class="ch-btn" onclick="changeChannel('https://taifood-blog.asia/embed/247-fox-cricket', this)">Fox Cricket</button>
+    </div>
+
+    <div class="tv-screen" id="screenBox">
+      <iframe id="player" src="https://taifood-blog.asia/embed/247-willow" sandbox="allow-scripts allow-same-origin allow-presentation" allowfullscreen="yes" allow="encrypted-media; picture-in-picture; fullscreen;" width="100%" height="100%" frameborder="0" referrerpolicy="no-referrer"></iframe>
+    </div>
+
+    <div class="tv-bottom">
+      <div class="dials">
+        <div class="dial"></div>
+        <div class="dial pink"></div>
+      </div>
+
+      <div class="quality-bar">
+        <button class="q-btn" onclick="setQuality('240p', this)">240p</button>
+        <button class="q-btn" onclick="setQuality('360p', this)">360p</button>
+        <button class="q-btn" onclick="setQuality('480p', this)">480p</button>
+        <button class="q-btn active" onclick="setQuality('auto', this)">AUTO</button>
+      </div>
+
+      <button class="fs-btn" onclick="goFullScreen()">⛶ FULL SCREEN</button>
+    </div>
   </div>
-  
-  <!-- Drive को List mode में embed किया। Google का बेकार UI हट गया -->
-  <iframe src="https://drive.google.com/embeddedfolderview?id=1DwS7LJrKHoqb7NPhY05PW_PRkQdpib7I#list"></iframe>
-</div>
 
-<script>
-function check() {
-  if(document.getElementById("pass").value.toUpperCase() === "TEAM123") {
-    document.getElementById("login").style.display = "none";
-    document.getElementById("main").style.display = "block";
-  } else {
-    document.getElementById("err").style.display = "block";
-  }
-}
-document.getElementById("pass").addEventListener("keypress", e => { if(e.key === "Enter") check() });
-</script>
+  <script>
+    function goFullScreen() {
+      var elem = document.getElementById("screenBox");
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+      } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen();
+      } else if (elem.msRequestFullscreen) {
+        elem.msRequestFullscreen();
+      }
+    }
+
+    function changeChannel(url, btnElement) {
+      var player = document.getElementById("player");
+      var buttons = document.querySelectorAll(".ch-btn");
+
+      buttons.forEach(function(b) { b.classList.remove("active"); });
+      btnElement.classList.add("active");
+
+      player.src = url;
+    }
+
+    function setQuality(level, btnElement) {
+      var player = document.getElementById("player");
+      var buttons = document.querySelectorAll(".q-btn");
+
+      buttons.forEach(function(b) { b.classList.remove("active"); });
+      btnElement.classList.add("active");
+
+      if (level === '240p') {
+        document.body.classList.add("low-data");
+        player.style.width = "25%";
+        player.style.height = "25%";
+        player.style.transform = "scale(4)";
+      } else if (level === '360p') {
+        document.body.classList.add("low-data");
+        player.style.width = "40%";
+        player.style.height = "40%";
+        player.style.transform = "scale(2.5)";
+      } else if (level === '480p') {
+        document.body.classList.add("low-data");
+        player.style.width = "62.5%";
+        player.style.height = "62.5%";
+        player.style.transform = "scale(1.6)";
+      } else {
+        document.body.classList.remove("low-data");
+        player.style.width = "100%";
+        player.style.height = "100%";
+        player.style.transform = "none";
+      }
+
+      var currentSrc = player.src;
+      player.src = currentSrc;
+    }
+  </script>
 
 </body>
 </html>
